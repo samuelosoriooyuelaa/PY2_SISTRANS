@@ -74,6 +74,9 @@ public class AfiliadoController {
         return ResponseEntity.internalServerError()
                .body("Error al crear afiliado: " + e.getMessage());
     }
+
+    
+    
 }
     
 

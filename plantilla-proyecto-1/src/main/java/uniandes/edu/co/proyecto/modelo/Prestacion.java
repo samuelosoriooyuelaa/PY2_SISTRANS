@@ -1,9 +1,10 @@
 package uniandes.edu.co.proyecto.modelo;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -14,7 +15,6 @@ import jakarta.persistence.Table;
 public class Prestacion {
     //atributos
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
 
     @ManyToOne
@@ -29,21 +29,25 @@ public class Prestacion {
     @JoinColumn(name="id_serviciosalud", referencedColumnName="id")
     private ServicioSalud id_serviciosalud;
 
-    private LocalDateTime fechaHoraInicio;
+    @Column(name = "FECHA_HORA_INICIO")
+    @JsonProperty("fecha_Hora_Inicio")
+    private LocalDateTime fecha_Hora_Inicio;
 
-    private  LocalDateTime fechaHoraFinal;
+    @Column(name = "FECHA_HORA_FINAL")
+    @JsonProperty("fecha_Hora_Final")
+    private  LocalDateTime fecha_Hora_Final;
 
     //constructor
     public Prestacion(){;}
 
     public Prestacion(Integer id, Afiliado id_afiliado, IPS id_ips, ServicioSalud id_serviciosalud, 
-    LocalDateTime fechaHoraInicio, LocalDateTime fechaHoraFinal){
+    LocalDateTime fecha_Hora_Inicio, LocalDateTime fecha_Hora_Final){
         this.id =id;
         this.id_afiliado=id_afiliado;
         this.id_ips = id_ips;
         this.id_serviciosalud=id_serviciosalud;
-        this.fechaHoraInicio=fechaHoraInicio;
-        this.fechaHoraFinal=fechaHoraFinal;
+        this.fecha_Hora_Inicio=fecha_Hora_Inicio;
+        this.fecha_Hora_Final=fecha_Hora_Final;
     }
     //setters y getters
 
@@ -71,17 +75,17 @@ public class Prestacion {
     public void setId_serviciosalud(ServicioSalud id_serviciosalud){
         this.id_serviciosalud=id_serviciosalud;
     }
-    public LocalDateTime getFechaHoraInicio(){
-        return this.fechaHoraInicio;
+    public LocalDateTime getFecha_Hora_Inicio(){
+        return this.fecha_Hora_Inicio;
     }
-    public void setFechaHoraInicio(LocalDateTime fechaHoraInicio){
-        this.fechaHoraInicio=fechaHoraInicio;
+    public void setFechaHoraInicio(LocalDateTime fecha_Hora_Inicio){
+        this.fecha_Hora_Inicio=fecha_Hora_Inicio;
     }
-    public LocalDateTime getFechaHoraFinal(){
-        return this.fechaHoraFinal;
+    public LocalDateTime getFecha_Hora_Final(){
+        return this.fecha_Hora_Final;
     }
-    public void setFechaHoraFinal(LocalDateTime fechaHoraFinal){
-        this.fechaHoraFinal=fechaHoraFinal;
+    public void setFechaHoraFinal(LocalDateTime fecha_Hora_Final){
+        this.fecha_Hora_Final=fecha_Hora_Final;
     }
 
 

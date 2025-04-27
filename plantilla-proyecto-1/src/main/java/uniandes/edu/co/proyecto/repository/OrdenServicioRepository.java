@@ -23,7 +23,7 @@ public interface OrdenServicioRepository extends JpaRepository<OrdenServicio, In
     //insertar un orden servicio RF6
     @Modifying
     @Transactional
-    @Query(value="INSERT INTO ordenservicio (id, id_medico, id_afiliado, id_serviciosalud, fecha, estado) VALUES (eps_sequence.nextval, :id_medico, :id_afiliado, :id_serviciosalud, :fecha, :estado)", nativeQuery=true)
+    @Query(value="INSERT INTO ordenservicio (id_medico, id_afiliado, id_serviciosalud, fecha, estado) VALUES ( :id_medico, :id_afiliado, :id_serviciosalud, :fecha, :estado)", nativeQuery=true)
     void insertarOrdenServicio(@Param("id_medico") Integer id_medico, @Param("id_afiliado") Integer id_afiliado, @Param("id_serviciosalud") Integer id_serviciosalud,
     @Param("fecha") Date fecha, @Param("estado") String estado);
 

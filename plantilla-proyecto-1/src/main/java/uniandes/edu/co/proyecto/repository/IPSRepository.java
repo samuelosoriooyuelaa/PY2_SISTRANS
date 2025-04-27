@@ -22,9 +22,14 @@ public interface IPSRepository extends JpaRepository<IPS, Integer>{
     //insertar ips RF1
     @Modifying
     @Transactional
-    @Query(value="INSERT INTO ips (id, nombre, nit, direccion, telefono) VALUES (eps_sequence.nextval, :nombre, :nit, :direccion, :telefono)", nativeQuery=true)
-    void insertarIPS(@Param("nombre") String nombre, @Param("nit") String nit, @Param("direccion") String direccion, 
-    @Param("telefono") String telefono);
+    @Query(value="INSERT INTO ips (nombre, nit, direccion, telefono) VALUES (:nombre, :nit, :direccion, :telefono)", nativeQuery=true)
+    void insertarIPS(
+        @Param("nombre") String nombre, 
+        @Param("nit") String nit, 
+        @Param("direccion") String direccion, 
+        @Param("telefono") String telefono);
+
+
 
     //actualizar ips
     @Modifying

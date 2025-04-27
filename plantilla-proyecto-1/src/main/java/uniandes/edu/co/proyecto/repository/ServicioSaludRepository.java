@@ -21,7 +21,7 @@ public interface  ServicioSaludRepository extends JpaRepository<ServicioSalud, I
     //insertar un servicio salud RF2
     @Modifying
     @Transactional
-    @Query(value="INSERT INTO serviciosalud (id, nombre) VALUES (eps_sequence.nextval, :nombre)", nativeQuery=true)
+    @Query(value="INSERT INTO serviciosalud (nombre) VALUES (:nombre)", nativeQuery=true)
     void insertarServicioSalud(@Param("nombre") String nombre);
 
     //actualizar un servicio salud

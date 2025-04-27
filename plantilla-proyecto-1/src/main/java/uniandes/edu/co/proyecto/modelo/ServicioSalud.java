@@ -23,7 +23,6 @@ public class ServicioSalud {
     }
     //atributos
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
 
     @Enumerated(EnumType.STRING)

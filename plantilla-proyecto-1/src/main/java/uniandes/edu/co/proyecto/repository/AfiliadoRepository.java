@@ -26,7 +26,7 @@ public interface AfiliadoRepository extends JpaRepository<Afiliado, Integer>{
     //insertar un afiliado RF5
     @Modifying
     @Transactional
-    @Query(value="INSERT INTO afiliado (id, nombre, tipo_documento, numero_documento, fecha_nacimiento, direccion, telefono, tipo) VALUES (eps_sequence.nextval, :nombre, :tipo_documento, :numero_documento, :fecha_nacimiento, :direccion, :telefono, :tipo)", nativeQuery=true)
+    @Query(value="INSERT INTO afiliado (nombre, tipo_documento, numero_documento, fecha_nacimiento, direccion, telefono, tipo) VALUES (:nombre, :tipo_documento, :numero_documento, :fecha_nacimiento, :direccion, :telefono, :tipo)", nativeQuery=true)
     void insertarAfiliado(@Param("nombre") String nombre, @Param("tipo_documento") String tipo_documento, @Param("numero_documento") String numero_documento, 
     @Param("fecha_nacimiento") Date fecha_nacimiento, @Param("direccion") String direccion, @Param("telefono") String telefono, @Param("tipo") String tipo);
 

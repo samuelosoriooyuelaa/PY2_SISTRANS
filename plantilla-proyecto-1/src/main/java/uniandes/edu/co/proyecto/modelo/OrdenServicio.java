@@ -14,15 +14,10 @@ import jakarta.persistence.Table;
 @Entity 
 @Table(name="ordenservicio")
 public class OrdenServicio {
-    public enum EstadoOrden{
-        CANCELADA, 
-        VIGENTE, 
-        COMPLETADA
-    }
+    
 
     //Atributos
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
 
     @ManyToOne
@@ -39,13 +34,13 @@ public class OrdenServicio {
 
     private Date fecha;
 
-    @Enumerated(EnumType.STRING)
-    private EstadoOrden estado;
+    
+    private String estado;
 
     //Constructor 
     public OrdenServicio(){;}
 
-    public OrdenServicio(Integer id, Medico id_medico, Afiliado id_afiliado, ServicioSalud id_serviciosalud, Date fecha, EstadoOrden estado){
+    public OrdenServicio(Integer id, Medico id_medico, Afiliado id_afiliado, ServicioSalud id_serviciosalud, Date fecha, String estado){
         this.id=id;
         this.id_medico=id_medico;
         this.id_afiliado=id_afiliado;
@@ -53,6 +48,8 @@ public class OrdenServicio {
         this.fecha=fecha;
         this.estado=estado;
     }
+
+    
 
     //setters y getters
     public Integer getId(){
@@ -85,10 +82,10 @@ public class OrdenServicio {
     public void setFecha(Date fecha){
         this.fecha=fecha;
     }
-    public EstadoOrden getEstadoOrden(){
+    public String getEstadoOrden(){
         return this.estado;
     }
-    public void setEstadoOrden(EstadoOrden estado){
+    public void setEstadoOrden(String estado){
         this.estado=estado;
     }
 

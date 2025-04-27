@@ -46,16 +46,16 @@ public class PrestacionesController {
                 return ResponseEntity.badRequest().body("El servicio de salud es obligatorio");
             }
             
-            if (prestacion.getFechaHoraInicio() == null) {
+            if (prestacion.getFecha_Hora_Inicio() == null) {
                 return ResponseEntity.badRequest().body("La fecha/hora de inicio es obligatoria");
             }
             
-            if (prestacion.getFechaHoraFinal() == null) {
+            if (prestacion.getFecha_Hora_Final() == null) {
                 return ResponseEntity.badRequest().body("La fecha/hora final es obligatoria");
             }
             
             
-            if (prestacion.getFechaHoraFinal().isBefore(prestacion.getFechaHoraInicio())) {
+            if (prestacion.getFecha_Hora_Final().isBefore(prestacion.getFecha_Hora_Inicio())) {
                 return ResponseEntity.badRequest().body("La fecha final debe ser posterior a la fecha inicial");
             }
 
@@ -64,8 +64,8 @@ public class PrestacionesController {
                 prestacion.getId_afiliado().getId(),
                 prestacion.getId_ips().getId(),
                 prestacion.getId_serviciosalud().getId(),
-                prestacion.getFechaHoraInicio(),
-                prestacion.getFechaHoraFinal()
+                prestacion.getFecha_Hora_Inicio(),
+                prestacion.getFecha_Hora_Final()
             );
             
             return ResponseEntity.status(HttpStatus.CREATED).body("Prestación creada exitosamente");
@@ -78,6 +78,11 @@ public class PrestacionesController {
                    .body("Error al crear la prestación: " + e.getMessage());
         }
     }
+
+   
+
+
+    
 
 
 

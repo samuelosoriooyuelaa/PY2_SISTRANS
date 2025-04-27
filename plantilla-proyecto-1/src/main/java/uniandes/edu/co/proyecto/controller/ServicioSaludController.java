@@ -30,47 +30,31 @@ public class ServicioSaludController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
-    //insertar servicio salud RF2
+    //insertar servicio salud
     @PostMapping("/servicios-salud/new/save")
     public ResponseEntity<String> servicioGuardar(@RequestBody ServicioSalud request) {
-        try{
-        if (request.getNombre() == null) {
-            return ResponseEntity.badRequest().body("El campo 'nombre' es obligatorio");
-        }
-
         try {
-            ServicioSalud.TipoServicio.valueOf(request.getNombre().name());
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("Tipo de servicio inválido. Los valores permitidos son: " + 
-                Arrays.toString(ServicioSalud.TipoServicio.values()));
+            if (request.getNombre() == null) {
+                return ResponseEntity.badRequest().body("El campo 'nombre' es obligatorio");
+            }
+
+            try {
+                ServicioSalud.TipoServicio.valueOf(request.getNombre().name());
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.badRequest().body("Tipo de servicio inválido. Los valores permitidos son: " + 
+                    Arrays.toString(ServicioSalud.TipoServicio.values()));
+            }
+
+            servicioSaludRepository.insertarServicioSalud(request.getNombre().toString());
+            return ResponseEntity.status(HttpStatus.CREATED).body("Servicio creado exitosamente");
+
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                   .body("Error: El servicio ya existe o los datos son inválidos");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                   .body("Error al crear servicio: " + e.getMessage());
         }
-
-        servicioSaludRepository.insertarServicioSalud(request.getNombre().toString());
-        return ResponseEntity.status(HttpStatus.CREATED).body("servicio creado exitosamente");
-
-
-    } catch (org.springframework.dao.DataIntegrityViolationException e) {
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-               .body("Error: los campos son obligatorios o estan invalidos");
-    } catch (Exception e) {
-        return ResponseEntity.internalServerError()
-               .body("Error al crear servicio: " + e.getMessage());
-    }
-
-
-        
-
-   
-
-
-
-
-
-
-
-        
-        
     }
 
     //Eliminar servicio salud

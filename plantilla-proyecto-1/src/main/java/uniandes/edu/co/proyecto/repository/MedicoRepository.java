@@ -22,7 +22,7 @@ public interface MedicoRepository extends JpaRepository<Medico, Integer> {
     //insertar un medico RF4
     @Modifying
     @Transactional
-    @Query(value="INSERT INTO medico (id, nombre, tipo_documento, numero_documento, registro_medico, especialidad) VALUES (eps_sequence.nextval, :nombre, :tipo_documento, :numero_documento, :registro_medico, :especialidad)", nativeQuery=true)
+    @Query(value="INSERT INTO medico (nombre, tipo_documento, numero_documento, registro_medico, especialidad) VALUES (:nombre, :tipo_documento, :numero_documento, :registro_medico, :especialidad)", nativeQuery=true)
     void insertarMedico(@Param("nombre") String nombre, @Param("tipo_documento") String tipo_documento, @Param("numero_documento") String numero_documento,
     @Param("registro_medico") String registro_medico, @Param("especialidad") String especialidad);
 

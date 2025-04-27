@@ -23,28 +23,35 @@ public interface PrestacionRepository extends JpaRepository<Prestacion, Integer>
     //Insertar una prestacion RF8
     @Modifying
     @Transactional
-    @Query(value="INSERT INTO prestacion (id, id_afiliado, id_ips, id_serviciosalud, fechaHoraInicio, fechaHoraFinal) VALUES (eps_sequence.nextval, :id_afiliado, :id_ips, :id_serviciosalud, :fechaHoraInicio, :fechaHoraFinal)", nativeQuery=true)
+    @Query(value="INSERT INTO prestacion ( id_afiliado, id_ips, id_serviciosalud, fecha_Hora_Inicio, fecha_Hora_Final) VALUES ( :id_afiliado, :id_ips, :id_serviciosalud, :fecha_Hora_Inicio, :fecha_Hora_Final)", nativeQuery=true)
     void insertarPrestacion(@Param("id_afiliado") Integer id_afiliado, @Param("id_ips") Integer id_ips, @Param("id_serviciosalud") Integer id_serviciosalud,
-    @Param("fechaHoraInicio") LocalDateTime fechaHoraInicio, @Param("fechaHoraFinal") LocalDateTime fechaHoraFinal);
+    @Param("fecha_Hora_Inicio") LocalDateTime fechaHoraInicio, @Param("fecha_Hora_Final") LocalDateTime fechaHoraFinal);
 
     //actualizar una prestacion 
     @Modifying
     @Transactional
-    @Query(value="UPDATE prestacion SET id_afiliado = :id_afiliado, id_ips = :id_ips, id_serviciosalud = :id_serviciosalud, fechaHoraInicio = :fechaHoraInicio, fechaHoraFinal = :fechaHoraFinal  WHERE id = :id", nativeQuery=true)
-    void actualizarPrestacion(@Param("id") Integer id, @Param("id_afiliado") Integer id_afiliado, @Param("id_ips") Integer id_ips, @Param("id_serviciosalud") Integer id_serviciosalud, @Param("fechaHoraInicio") LocalDateTime fechaHoraInicio, @Param("fechaHoraFinal") LocalDateTime fechaHoraFinal);
+    @Query(value="UPDATE prestacion SET id_afiliado = :id_afiliado, id_ips = :id_ips, id_serviciosalud = :id_serviciosalud, fecha_Hora_Inicio = :fecha_Hora_Inicio, fecha_Hora_Final = :fecha_Hora_Final  WHERE id = :id", nativeQuery=true)
+    void actualizarPrestacion(@Param("id") Integer id, @Param("id_afiliado") Integer id_afiliado, @Param("id_ips") Integer id_ips, @Param("id_serviciosalud") Integer id_serviciosalud, @Param("fecha_Hora_Inicio") LocalDateTime fecha_Hora_Inicio, @Param("fecha_Hora_Final") LocalDateTime fecha_Hora_Final);
 
     //Eliminar una prestacion
     @Modifying
     @Transactional
     @Query(value="DELETE FROM prestacion WHERE id =:id", nativeQuery=true)
     void eliminarPrestacion(@Param("id") Integer id);
+
+
     
 
-
-
     
-
-
-
-
 }
+
+    
+
+
+
+    
+
+
+
+
+

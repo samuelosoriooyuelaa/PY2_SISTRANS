@@ -21,7 +21,6 @@ public class Afiliado {
 
     //atributos
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
 
     private String nombre;

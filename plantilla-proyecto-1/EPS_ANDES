@@ -1,0 +1,283 @@
+{
+  "info": {
+    "_postman_id": "tu-id-unico",
+    "name": "API Completa",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "IPS Endpoints",
+      "item": [
+        {
+          "name": "Crear nueva IPS",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nombre\": \"Clinica Ejemplo\",\n    \"nit\": \"901234567-8\",\n    \"direccion\": \"Carrera 45 #26-85\",\n    \"telefono\": \"6012345678\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/ipss/new/save",
+              "host": ["{{base_url}}"],
+              "path": ["ipss", "new", "save"]
+            }
+          }
+        },
+        {
+          "name": "Obtener todas las IPS",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ipss",
+              "host": ["{{base_url}}"],
+              "path": ["ipss"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Servicios de Salud",
+      "item": [
+        {
+          "name": "Crear Servicio",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nombre\": \"CONSULTA_MEDICA\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/servicios-salud/new/save",
+              "host": ["{{base_url}}"],
+              "path": ["servicios-salud", "new", "save"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Prestan Endpoints",
+      "item": [
+        {
+          "name": "Crear Relación IPS-Servicio",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"pk\": {\n        \"id_ips\": { \"id\": 1 },\n        \"id_serviciosalud\": { \"id\": 1 }\n    }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/prestan/new/save",
+              "host": ["{{base_url}}"],
+              "path": ["prestan", "new", "save"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Crear nuevo médico",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"nombre\": \"Juan Pérez\",\n    \"tipoDocumento\": \"CC\",\n    \"numeroDocumento\": \"123456789\",\n    \"registroMedico\": \"RM12345\",\n    \"especialidad\": \"Cardiología\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/medicos/new/save",
+          "host": ["{{base_url}}"],
+          "path": ["medicos", "new", "save"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Crear nuevo afiliado",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"nombre\": \"María González\",\n    \"tipoDocumento\": \"CC\",\n    \"numeroDocumento\": \"987654321\",\n    \"fechaNacimiento\": \"1985-05-15\",\n    \"direccion\": \"Calle 123 #45-67\",\n    \"telefono\": \"3101234567\",\n    \"tipo\": \"COTIZANTE\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/afiliados/new/save",
+          "host": ["{{base_url}}"],
+          "path": ["afiliados", "new", "save"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Ejemplo con BENEFICIARIO",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"nombre\": \"Pedro Sánchez\",\n    \"tipoDocumento\": \"TI\",\n    \"numeroDocumento\": \"1234567890\",\n    \"fechaNacimiento\": \"2010-08-22\",\n    \"direccion\": \"Carrera 56 #12-34\",\n    \"telefono\": \"3209876543\",\n    \"tipo\": \"BENEFICIARIO\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/afiliados/new/save",
+          "host": ["{{base_url}}"],
+          "path": ["afiliados", "new", "save"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Crear nueva orden de servicio",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"id_medico\": { \"id\": 1 },\n    \"id_afiliado\": { \"id\": 1 },\n    \"id_serviciosalud\": { \"id\": 1 },\n    \"fecha\": \"2023-11-15\",\n    \"estado\": \"VIGENTE\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/orden-servicio/new/save",
+          "host": ["{{base_url}}"],
+          "path": ["orden-servicio", "new", "save"]
+        }
+      },
+      "response": []
+    },
+
+    {
+      "name": "Crear relación cotizante-beneficiario",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"pk\": {\n        \"id_cotizante\": { \"id\": 1 },\n        \"id_beneficiario\": { \"id\": 2 },\n        \"parentesco\": \"HIJO\"\n    }\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/cotizantes/new/save",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["cotizantes", "new", "save"]
+        }
+      }
+    },
+    {
+      "name": "Crear agenda vacía",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"id_medico\": { \"id\": 1 },\n    \"id_serviciosalud\": { \"id\": 1 },\n    \"id_ips\": { \"id\": 1 },\n    \"fecha_Hora\": \"2023-12-15T10:00:00\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/agenda-servicio/new/save",
+          "host": ["{{base_url}}"],
+          "path": ["agenda-servicio", "new", "save"]
+        }
+      }
+    },
+    {
+      "name": "Reservar Agenda (PUT)",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"idAfiliado\": 1,\n    \"idOrdenServicio\": 1\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/agenda-servicio/1/reservar",
+          "host": ["{{base_url}}"],
+          "path": ["agenda-servicio", "1", "reservar"]
+        }
+      }
+    },
+    {
+      "name": "Crear nueva prestación",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"id_afiliado\": { \"id\": 1 },\n    \"id_ips\": { \"id\": 1 },\n    \"id_serviciosalud\": { \"id\": 1 },\n    \"fecha_Hora_Inicio\": \"2023-12-15T10:00:00\",\n    \"fecha_Hora_Final\": \"2023-12-15T11:00:00\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/prestaciones/new/save",
+          "host": ["{{base_url}}"],
+          "path": ["prestaciones", "new", "save"]
+        }
+      },
+      "response": []
+    }
+   
+
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ]
+}

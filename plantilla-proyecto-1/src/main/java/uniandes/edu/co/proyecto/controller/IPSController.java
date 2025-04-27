@@ -5,6 +5,7 @@ package uniandes.edu.co.proyecto.controller;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,15 +36,22 @@ public class IPSController {
 
     //insertar ips RF1
     @PostMapping("/ipss/new/save")
-    public ResponseEntity<?> ipsGuardar(@RequestBody IPS ips){
-        try {
-            ipsRepository.insertarIPS(ips.getNombre(), ips.getNit(), ips.getDireccion(), ips.getTelefono());
-            return ResponseEntity.status(HttpStatus.CREATED).body("IPS creada exitosamente ");
-        } catch (Exception e){
-            return new ResponseEntity<>("error al crear la entidad", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
+public ResponseEntity<?> ipsGuardar(@RequestBody IPS ips){
+    try {
+        // Elimina la validación del ID
+        ipsRepository.insertarIPS(
+            ips.getNombre(), 
+            ips.getNit(), 
+            ips.getDireccion(), 
+            ips.getTelefono());
+            
+        return ResponseEntity.status(HttpStatus.CREATED)
+               .body("IPS creada exitosamente");
+    } catch (Exception e){
+        return ResponseEntity.internalServerError()
+               .body("Error al crear la IPS: " + e.getMessage());
     }
+}
 
     //actualizar ips 
      @PostMapping("/ipss/{id}/edit/save")
@@ -58,7 +66,7 @@ public class IPSController {
     
     //eliminar ips 
     @GetMapping("/ipss/{id}/delete")
-    public ResponseEntity<?> bebidaBorrar(@PathVariable("id") Integer id) {
+    public ResponseEntity<?> ipsBorrar(@PathVariable("id") Integer id) {
         try {
             ipsRepository.eliminarIPS(id);
             return ResponseEntity.ok("ips eliminada exitosamente");

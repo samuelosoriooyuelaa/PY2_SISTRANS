@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import uniandes.edu.co.proyecto.modelo.Cotizante;
 import uniandes.edu.co.proyecto.modelo.CotizantePK;
@@ -30,44 +31,33 @@ public class CotizanteController {
 
     //insertar cotizante
     @PostMapping("/cotizantes/new/save")
-    public ResponseEntity<?> crearRelacionCotizante(@RequestBody Cotizante request) {
+    public ResponseEntity<?> crearCotizante(@RequestBody Cotizante cotizante) {
         try {
-
-            CotizantePK pk = request.getPk();
-        
-            if (pk.getId_cotizante() == null || pk.getId_beneficiario() == null) {
-                return ResponseEntity.badRequest().body("Los IDs de cotizante y beneficiario son obligatorios");
+            // Validar que los IDs y parentesco estén presentes
+            CotizantePK pk = cotizante.getPk();
+            if (cotizante.getPk() == null || 
+                pk.getId_cotizante() == null || 
+                pk.getId_beneficiario() == null ||
+                pk.getParentesco() == null) {
+                return ResponseEntity.badRequest().body("Todos los campos son obligatorios");
             }
             
-            if (pk.getParentesco() == null || pk.getParentesco().trim().isEmpty()) {
-                return ResponseEntity.badRequest().body("El parentesco es obligatorio");
-            }
-
-            
-            if (pk.getId_cotizante().equals(pk.getId_beneficiario())) {
-                return ResponseEntity.badRequest().body("Un afiliado no puede ser cotizante y beneficiario de sí mismo");
-            }
-
-            Integer id_cotizante = pk.getId_cotizante().getId();
-            Integer id_beneficiario = pk.getId_beneficiario().getId();
-
-
             cotizanteRepository.insertarCotizante(
-                id_cotizante,
-                id_beneficiario,
+                pk.getId_cotizante().getId(),
+                pk.getId_beneficiario().getId(),
                 pk.getParentesco()
             );
             
-            return ResponseEntity.status(HttpStatus.CREATED).body("Relación cotizante-beneficiario creada exitosamente");
-            
+            return ResponseEntity.status(HttpStatus.CREATED)
+                   .body("Relación cotizante-beneficiario creada exitosamente");
+                   
         } catch (org.springframework.dao.DataIntegrityViolationException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                   .body("Error: Posiblemente uno de los afiliados no existe o la relación ya existe");
+                   .body("Error: Verifica que los IDs existen y son del tipo correcto");
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
-                   .body("Error al crear la relación: " + e.getMessage());
+                   .body("Error al crear relación: " + e.getMessage());
         }
     }
-
 
 }

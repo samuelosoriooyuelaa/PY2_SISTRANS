@@ -1,8 +1,11 @@
 package uniandes.edu.co.proyecto.controller;
+import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,9 +13,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import uniandes.edu.co.proyecto.modelo.AgendaReservaRequest;
+import uniandes.edu.co.proyecto.interfaz.DisponibilidadServicioProjection;
+import uniandes.edu.co.proyecto.interfaz.IndiceUsoServicioProjection;
 import uniandes.edu.co.proyecto.modelo.AgendaServicio;
 import uniandes.edu.co.proyecto.repository.AgendaServicioRepository;
 
@@ -73,72 +78,75 @@ public class AgendaServicioController {
 
 
     //insertar agenda servicio (afiliado reserva su srvicio)
-    @GetMapping("/agenda-servicio/{id}/disponible")
-    public ResponseEntity<?> verificarDisponibilidad(@PathVariable Integer id) {
+    @PutMapping("/agenda-servicio/{id}/reservar")  
+    public ResponseEntity<?> reservarAgenda(
+            @PathVariable Integer id,
+            @RequestBody Map<String, Integer> request) {
+        
         try {
-             AgendaServicio agenda = agendaServicioRepository.darAgendaServicio(id);
-        
-             if (agenda == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontró la agenda con ID: " + id);
-        }
-        
-              if (agenda.getId_afiliado() != null) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("La agenda ya está reservada");
-        }
-        
-        return ResponseEntity.ok(Map.of(
-            "disponible", true,
-            "mensaje", "Agenda disponible para reserva",
-            "detalles", Map.of(
-                "medico", agenda.getId_medico().getNombre(),
-                "servicio", agenda.getId_serviciosalud().getNombre(),
-                "fechaHora", agenda.getFechaHora()
-            )
-        ));
-        
-    } catch (Exception e) {
-        return ResponseEntity.internalServerError()
-               .body("Error al verificar disponibilidad: " + e.getMessage());
-    }
-}
-
-@PutMapping("/agenda-servicio/{id}/reservar")
-public ResponseEntity<?> reservarAgendaServicio(
-        @PathVariable Integer id,
-        @RequestBody AgendaReservaRequest request)
-         {
-           try {
-        
-        if (request.getId_afiliado() == null || request.getId_ordenservicio() == null) {
-            return ResponseEntity.badRequest().body("Todos los campos son obligatorios");
-        }
-
-        
-        AgendaServicio agenda = agendaServicioRepository.darAgendaServicio(id);
-        if (agenda == null) {
-            return ResponseEntity.notFound().build();
-        }
-        if (agenda.getId_afiliado() != null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                   .body("Esta agenda ya está reservada");
-        }
-
-        
-        int updated = agendaServicioRepository.AgendarServicio(
-            id,
-            request.getId_afiliado(),
-            request.getId_ordenservicio()
-        );
-
-        return updated > 0 
-            ? ResponseEntity.ok("Reserva realizada con éxito") 
-            : ResponseEntity.internalServerError().body("Error al procesar la reserva");
             
+            if (request.get("idAfiliado") == null || request.get("idOrdenServicio") == null) {
+                return ResponseEntity.badRequest().body("Se requieren idAfiliado e idOrdenServicio");
+            }
+
+           
+            int updatedRows = agendaServicioRepository.AgendarServicio(
+                id,
+                request.get("idAfiliado"),
+                request.get("idOrdenServicio")
+            );
+
+            if (updatedRows == 0) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                       .body("No se pudo reservar. La agenda puede no existir o ya estar reservada");
+            }
+
+            return ResponseEntity.ok("Agenda reservada exitosamente");
+
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                   .body("Error al reservar agenda: " + e.getMessage());
+        }
+    }
+
+
+//rfc1
+@GetMapping("/agenda-servicio/{idServicio}/disponibilidad")
+public ResponseEntity<List<DisponibilidadServicioProjection>> getDisponibilidad(
+        @PathVariable Integer idServicio,
+        @RequestParam(defaultValue = "#{T(java.time.LocalDateTime).now()}") LocalDateTime inicio,
+        @RequestParam(defaultValue = "#{T(java.time.LocalDateTime).now().plusWeeks(4)}") LocalDateTime fin) {
+    
+    return ResponseEntity.ok(
+        agendaServicioRepository.findDisponibilidad(idServicio, inicio, fin)
+    );
+}
+
+//rfc3
+@GetMapping("/agenda-servicio/indice-uso")
+public ResponseEntity<?> getIndiceUsoServicios(
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaFin) {
+    
+    
+    if (fechaInicio.isAfter(fechaFin)) {
+        return ResponseEntity.badRequest()
+               .body("La fecha de inicio no puede ser posterior a la fecha final");
+    }
+
+    try {
+        List<IndiceUsoServicioProjection> indices = 
+            agendaServicioRepository.calcularIndiceUsoServicios(fechaInicio, fechaFin);
+        
+        return ResponseEntity.ok(indices);
     } catch (Exception e) {
         return ResponseEntity.internalServerError()
-               .body("Error: " + e.getMessage());
+               .body("Error al calcular índices: " + e.getMessage());
     }
 }
+
+
+
 
 
 

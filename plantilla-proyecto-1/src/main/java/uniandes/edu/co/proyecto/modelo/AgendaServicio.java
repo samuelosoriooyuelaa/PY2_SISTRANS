@@ -10,11 +10,10 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="ordenservicio")
+@Table(name="agendaservicio")
 public class AgendaServicio {
     //Atributos
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
 
     @ManyToOne
@@ -29,7 +28,7 @@ public class AgendaServicio {
     @JoinColumn(name="id_ips", referencedColumnName="id",nullable=false)
     private IPS id_ips;
 
-    private LocalDateTime fechaHora;
+    private LocalDateTime fecha_Hora;
 
     @ManyToOne
     @JoinColumn(name="id_afiliado", referencedColumnName="id",nullable=true)
@@ -43,11 +42,11 @@ public class AgendaServicio {
     public AgendaServicio(){;}
 
     public AgendaServicio(int id, Medico id_medico, ServicioSalud id_serviciosalud, IPS id_ips,
-    LocalDateTime fechaHora){
+    LocalDateTime fecha_Hora){
         this.id=id;
         this.id_medico=id_medico;
         this.id_ips=id_ips;
-        this.fechaHora=fechaHora;
+        this.fecha_Hora=fecha_Hora;
         this.id_afiliado=null;
         this.id_ordenservicio=null;
     }
@@ -78,10 +77,10 @@ public class AgendaServicio {
         this.id_ips=id_ips;
     }
     public LocalDateTime getFechaHora(){
-        return this.fechaHora;
+        return this.fecha_Hora;
     }
     public void setFechaHora(LocalDateTime fechaHora){
-        this.fechaHora=fechaHora;
+        this.fecha_Hora=fechaHora;
     }
     public Afiliado getId_afiliado(){
         return this.id_afiliado;
