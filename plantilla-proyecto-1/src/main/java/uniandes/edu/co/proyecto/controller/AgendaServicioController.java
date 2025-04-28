@@ -111,37 +111,55 @@ public class AgendaServicioController {
 
 
 //rfc1
-@GetMapping("/agenda-servicio/{idServicio}/disponibilidad")
-public ResponseEntity<List<DisponibilidadServicioProjection>> getDisponibilidad(
-        @PathVariable Integer idServicio,
-        @RequestParam(defaultValue = "#{T(java.time.LocalDateTime).now()}") LocalDateTime inicio,
-        @RequestParam(defaultValue = "#{T(java.time.LocalDateTime).now().plusWeeks(4)}") LocalDateTime fin) {
+@GetMapping("/agenda-servicio/disponibilidad/{idServicio}")
+public ResponseEntity<?> consultarDisponibilidadServicio(
+    @PathVariable Integer idServicio) {
     
-    return ResponseEntity.ok(
-        agendaServicioRepository.findDisponibilidad(idServicio, inicio, fin)
-    );
+    try {
+        LocalDateTime fechaActual = LocalDateTime.now();
+        LocalDateTime fechaFin = fechaActual.plusWeeks(4);
+        
+        List<DisponibilidadServicioProjection> disponibilidad = 
+            agendaServicioRepository.findDisponibilidadByServicio(
+                idServicio, 
+                fechaActual, 
+                fechaFin);
+        
+        if (disponibilidad.isEmpty()) {
+            return ResponseEntity.ok("No hay disponibilidad para este servicio en las próximas 4 semanas");
+        }
+        
+        return ResponseEntity.ok(disponibilidad);
+        
+    } catch (Exception e) {
+        return ResponseEntity.internalServerError()
+               .body("Error al consultar disponibilidad: " + e.getMessage());
+    }
 }
 
 //rfc3
 @GetMapping("/agenda-servicio/indice-uso")
 public ResponseEntity<?> getIndiceUsoServicios(
-        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
-        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaFin) {
+    @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
+    @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaFin) {
     
-    
-    if (fechaInicio.isAfter(fechaFin)) {
-        return ResponseEntity.badRequest()
-               .body("La fecha de inicio no puede ser posterior a la fecha final");
-    }
-
     try {
+        if (fechaFin.isBefore(fechaInicio)) {
+            return ResponseEntity.badRequest().body("La fecha final debe ser posterior a la fecha inicial");
+        }
+
         List<IndiceUsoServicioProjection> indices = 
             agendaServicioRepository.calcularIndiceUsoServicios(fechaInicio, fechaFin);
         
+        if (indices.isEmpty()) {
+            return ResponseEntity.ok("No hay datos disponibles para el período especificado");
+        }
+        
         return ResponseEntity.ok(indices);
+        
     } catch (Exception e) {
         return ResponseEntity.internalServerError()
-               .body("Error al calcular índices: " + e.getMessage());
+               .body("Error al calcular índices de uso: " + e.getMessage());
     }
 }
 

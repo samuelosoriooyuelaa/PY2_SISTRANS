@@ -1,0 +1,270 @@
+{
+    "info": {
+        "_postman_id": "dc9142c9-c7e0-42e3-a525-85cc9246519a",
+        "name": "Servicios-Salud",
+        "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+        "_exporter_id": "19767625",
+        "_collection_link": "https://your-postman-link"
+    },
+    "item": [
+        {
+            "name": "Consultas de Disponibilidad",
+            "item": [
+                {
+                    "name": "RFC1 - Consultar disponibilidad servicio salud (próximas 4 semanas)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/agenda-servicio/disponibilidad/1",
+                            "host": ["{{base_url}}"],
+                            "path": ["agenda-servicio", "disponibilidad", "1"]
+                        },
+                        "description": "Consulta la disponibilidad de un servicio de salud específico (ID=1) para las próximas 4 semanas"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "RFC1 - Consultar disponibilidad con fechas personalizadas",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/agenda-servicio/disponibilidad/1?fechaInicio=2023-12-01T00:00:00&fechaFin=2023-12-31T23:59:59",
+                            "host": ["{{base_url}}"],
+                            "path": ["agenda-servicio", "disponibilidad", "1"],
+                            "query": [
+                                {
+                                    "key": "fechaInicio",
+                                    "value": "2023-12-01T00:00:00"
+                                },
+                                {
+                                    "key": "fechaFin",
+                                    "value": "2023-12-31T23:59:59"
+                                }
+                            ]
+                        },
+                        "description": "Consulta la disponibilidad de un servicio de salud específico (ID=1) para un rango de fechas personalizado"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "RFC1 - Consultar disponibilidad con parámetros",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/agenda-servicio/disponibilidad/1",
+                            "host": ["{{base_url}}"],
+                            "path": ["agenda-servicio", "disponibilidad", "1"],
+                            "query": [
+                                {
+                                    "key": "fechaInicio",
+                                    "value": "{{currentDateTime}}",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "fechaFin",
+                                    "value": "{{fourWeeksLater}}",
+                                    "disabled": true
+                                }
+                            ]
+                        },
+                        "description": "Versión con parámetros variables (usar variables de entorno para fechas)"
+                    },
+                    "response": []
+                },
+
+                {
+                    "name": "RFC2 - Servicios más solicitados",
+                    "item": [
+                        {
+                            "name": "RFC2 - Top 3 servicios más solicitados (rango específico)",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/prestaciones/servicios-mas-solicitados?fechaInicio=2023-01-01T00:00:00&fechaFin=2023-12-31T23:59:59",
+                                    "host": ["{{base_url}}"],
+                                    "path": ["prestaciones", "servicios-mas-solicitados"],
+                                    "query": [
+                                        {
+                                            "key": "fechaInicio",
+                                            "value": "2023-01-01T00:00:00"
+                                        },
+                                        {
+                                            "key": "fechaFin",
+                                            "value": "2023-12-31T23:59:59"
+                                        }
+                                    ]
+                                },
+                                "description": "Obtiene los 3 servicios más solicitados en el año 2023"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "RFC2 - Top 3 servicios más solicitados (últimos 30 días)",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/prestaciones/servicios-mas-solicitados?fechaInicio={{lastMonth}}&fechaFin={{currentDate}}",
+                                    "host": ["{{base_url}}"],
+                                    "path": ["prestaciones", "servicios-mas-solicitados"],
+                                    "query": [
+                                        {
+                                            "key": "fechaInicio",
+                                            "value": "{{lastMonth}}"
+                                        },
+                                        {
+                                            "key": "fechaFin",
+                                            "value": "{{currentDate}}"
+                                        }
+                                    ]
+                                },
+                                "description": "Obtiene los 3 servicios más solicitados en los últimos 30 días"
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "RFC3 - Índice de uso de servicios",
+                    "item": [
+                        {
+                            "name": "RFC3 - Calcular índice de uso (rango específico)",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/agenda-servicio/indice-uso?fechaInicio=2023-01-01T00:00:00&fechaFin=2023-12-31T23:59:59",
+                                    "host": ["{{base_url}}"],
+                                    "path": ["servicios", "indice-uso"],
+                                    "query": [
+                                        {
+                                            "key": "fechaInicio",
+                                            "value": "2023-01-01T00:00:00"
+                                        },
+                                        {
+                                            "key": "fechaFin",
+                                            "value": "2023-12-31T23:59:59"
+                                        }
+                                    ]
+                                },
+                                "description": "Calcula el índice de uso para todos los servicios en 2023"
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "RFC3 - Calcular índice de uso (últimos 30 días)",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/agenda-servicio/indice-uso?fechaInicio={{lastMonth}}&fechaFin={{currentDate}}",
+                                    "host": ["{{base_url}}"],
+                                    "path": ["servicios", "indice-uso"],
+                                    "query": [
+                                        {
+                                            "key": "fechaInicio",
+                                            "value": "{{lastMonth}}"
+                                        },
+                                        {
+                                            "key": "fechaFin",
+                                            "value": "{{currentDate}}"
+                                        }
+                                    ]
+                                },
+                                "description": "Calcula el índice de uso para todos los servicios en los últimos 30 días"
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "RFC4 - Utilización por afiliado ",
+                    "item": [
+                        {
+                            "name": "RFC4 - Consultar servicios por afiliado",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/prestaciones/utilizacion-afiliado/1?fechaInicio=2023-01-01T00:00:00&fechaFin=2023-12-31T23:59:59",
+                                    "host": ["{{base_url}}"],
+                                    "path": ["prestaciones", "utilizacion-afiliado", "1"],
+                                    "query": [
+                                        {
+                                            "key": "fechaInicio",
+                                            "value": "2023-01-01T00:00:00"
+                                        },
+                                        {
+                                            "key": "fechaFin",
+                                            "value": "2023-12-31T23:59:59"
+                                        }
+                                    ]
+                                },
+                                "description": "Consulta los servicios utilizados por el afiliado con ID=1 en 2023 (sin información de médico)"
+                            },
+                            "response": []
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8080"
+        },
+        {
+            "key": "currentDateTime",
+            "value": "2023-12-01T00:00:00"
+        },
+        {
+            "key": "fourWeeksLater",
+            "value": "2023-12-29T23:59:59"
+        }
+    ]
+}

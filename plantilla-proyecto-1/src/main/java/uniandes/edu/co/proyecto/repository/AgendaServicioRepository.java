@@ -47,58 +47,66 @@ public interface AgendaServicioRepository extends JpaRepository<AgendaServicio, 
     @Query(value="DELETE FROM agendaservicio WHERE id =:id", nativeQuery=true)
     void eliminarAgendaServicio(@Param("id") Integer id);
 
+//RFC1 
+    @Query(value = """
+    SELECT 
+        s.nombre as nombreServicio,
+        a.fecha_Hora as fechaHora,
+        i.nombre as nombreIPS,
+        m.nombre as nombreMedico
+    FROM 
+        agendaservicio a
+    JOIN 
+        serviciosalud s ON a.id_serviciosalud = s.id
+    JOIN 
+        ips i ON a.id_ips = i.id
+    JOIN 
+        medico m ON a.id_medico = m.id
+    WHERE 
+        a.id_serviciosalud = :idServicio
+        AND a.id_afiliado IS NULL
+        AND a.id_ordenservicio IS NULL
+        AND a.fecha_Hora BETWEEN :fechaInicio AND :fechaFin
+    ORDER BY 
+        a.fecha_Hora ASC
+    """, nativeQuery = true)
+List<DisponibilidadServicioProjection> findDisponibilidadByServicio(
+    @Param("idServicio") Integer idServicio,
+    @Param("fechaInicio") LocalDateTime fechaInicio,
+    @Param("fechaFin") LocalDateTime fechaFin);
 
-    //RFC1
-    @Query("""
-        SELECT 
-            s.nombre AS nombreServicio,
-            a.fecha_Hora AS fechaHoraDisponible,
-            i.nombre AS nombreIPS,
-            m.nombre AS nombreMedico
-        FROM AgendaServicio a
-        JOIN a.id_serviciosalud s
-        JOIN a.id_ips i
-        JOIN a.id_medico m
-        WHERE s.id = :idServicio
-        AND a.fecha_Hora BETWEEN :inicio AND :fin
-        AND a.id_afiliado IS NULL""")
-    List<DisponibilidadServicioProjection> findDisponibilidad(
-        @Param("idServicio") Integer idServicio,
-        @Param("inicio") LocalDateTime inicio,
-        @Param("fin") LocalDateTime fin);
 
 
 
     @Query(value = """
     SELECT 
-        ss.nombre AS nombreServicio,
-        COUNT(ag.id) AS totalDisponibles,
-        COUNT(p.id) AS totalUsados,
+        ss.id as idServicio,
+        ss.nombre as nombreServicio,
+        COUNT(DISTINCT CASE WHEN a.id_afiliado IS NULL THEN a.id END) as totalDisponibles,
+        COUNT(DISTINCT p.id) as totalUsados,
         CASE 
-            WHEN COUNT(ag.id) = 0 THEN 0.0
-            ELSE ROUND(COUNT(p.id) * 1.0 / COUNT(ag.id), 2)
-        END AS indiceUso
-    FROM serviciosalud ss
-    LEFT JOIN agendaservicio ag ON ss.id = ag.id_serviciosalud
-        AND ag.fecha_Hora BETWEEN :fechaInicio AND :fechaFin
-    LEFT JOIN prestacion p ON ag.id = p.id_agenda
-        AND p.fechaHoraInicio BETWEEN :fechaInicio AND :fechaFin
-    GROUP BY ss.nombre
-    ORDER BY indiceUso DESC
+            WHEN COUNT(DISTINCT p.id) = 0 THEN 0
+            ELSE ROUND(COUNT(DISTINCT p.id) / 
+                  (COUNT(DISTINCT CASE WHEN a.id_afiliado IS NULL THEN a.id END) + COUNT(DISTINCT p.id)), 2)
+        END as indiceUso
+    FROM 
+        serviciosalud ss
+    LEFT JOIN 
+        agendaservicio a ON ss.id = a.id_serviciosalud
+        AND a.fecha_Hora BETWEEN :fechaInicio AND :fechaFin
+    LEFT JOIN 
+        prestacion p ON ss.id = p.id_serviciosalud
+        AND p.fecha_Hora_Final BETWEEN :fechaInicio AND :fechaFin
+    GROUP BY 
+        ss.id, ss.nombre
+    ORDER BY 
+        indiceUso DESC
     """, nativeQuery = true)
 List<IndiceUsoServicioProjection> calcularIndiceUsoServicios(
     @Param("fechaInicio") LocalDateTime fechaInicio,
     @Param("fechaFin") LocalDateTime fechaFin);
 
 
-
 }
-
-    
-
-
-
-
-
 
 

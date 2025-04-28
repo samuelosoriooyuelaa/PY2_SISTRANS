@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 //rfc1
 public interface DisponibilidadServicioProjection {
     String getNombreServicio();
-    LocalDateTime getFechaHoraDisponible();
+    LocalDateTime getFechaHora();
     String getNombreIPS();
     String getNombreMedico();
 
