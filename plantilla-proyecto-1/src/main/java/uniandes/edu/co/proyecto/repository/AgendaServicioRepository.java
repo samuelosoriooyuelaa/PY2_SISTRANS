@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import uniandes.edu.co.proyecto.interfaz.DisponibilidadServicioProjection;
@@ -77,7 +78,7 @@ List<DisponibilidadServicioProjection> findDisponibilidadByServicio(
 
 
 
-
+//rfc4
     @Query(value = """
     SELECT 
         ss.id as idServicio,
@@ -105,6 +106,42 @@ List<DisponibilidadServicioProjection> findDisponibilidadByServicio(
 List<IndiceUsoServicioProjection> calcularIndiceUsoServicios(
     @Param("fechaInicio") LocalDateTime fechaInicio,
     @Param("fechaFin") LocalDateTime fechaFin);
+
+
+
+    //rfc6
+    @Query(value = """
+        SELECT /*+ FIRST_ROWS(100) */ 
+            ss.nombre as nombreServicio,
+            a.fecha_Hora as fechaHora,
+            i.nombre as nombreIPS,
+            m.nombre as nombreMedico
+        FROM 
+            agendaservicio a
+        JOIN 
+            serviciosalud ss ON a.id_serviciosalud = ss.id
+        JOIN 
+            ips i ON a.id_ips = i.id
+        JOIN 
+            medico m ON a.id_medico = m.id
+        WHERE 
+            a.id_serviciosalud = :idServicio
+            AND a.id_afiliado IS NULL
+            AND a.id_ordenservicio IS NULL
+            AND a.fecha_Hora BETWEEN :fechaInicio AND :fechaFin
+        ORDER BY 
+            a.fecha_Hora ASC
+        """, nativeQuery = true)
+    @Transactional(
+        isolation = Isolation.READ_COMMITTED,
+        timeout = 30 
+    )
+    List<DisponibilidadServicioProjection> findDisponibilidadByServicioReadCommittedWithTimeout(
+        @Param("idServicio") Integer idServicio,
+        @Param("fechaInicio") LocalDateTime fechaInicio,
+        @Param("fechaFin") LocalDateTime fechaFin);
+     
+
 
 
 }

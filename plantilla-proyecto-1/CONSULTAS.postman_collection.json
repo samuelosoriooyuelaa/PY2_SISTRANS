@@ -249,7 +249,30 @@
                             "response": []
                         }
                     ]
+                },
+
+                {
+                    "name": "RFC6 - Consultar con timeout de 30s",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/agenda-servicio/disponibilidad-read-committed-timeout/1",
+                            "host": ["{{base_url}}"],
+                            "path": ["agenda-servicio", "disponibilidad-read-committed-timeout", "1"]
+                        }
+                    },
+                    "response": []
                 }
+
+
+
+               
             ]
         }
     ],

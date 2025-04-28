@@ -3,7 +3,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
+import jakarta.persistence.QueryTimeoutException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -160,6 +160,40 @@ public ResponseEntity<?> getIndiceUsoServicios(
     } catch (Exception e) {
         return ResponseEntity.internalServerError()
                .body("Error al calcular índices de uso: " + e.getMessage());
+    }
+}
+
+
+@GetMapping("/agenda-servicio/disponibilidad-read-committed-timeout/{idServicio}")
+public ResponseEntity<?> consultarDisponibilidadServicioReadCommittedWithTimeout(
+    @PathVariable Integer idServicio,
+    @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
+    @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaFin) {
+    
+    try {
+        LocalDateTime fechaInicioConsulta = fechaInicio != null ? fechaInicio : LocalDateTime.now();
+        LocalDateTime fechaFinConsulta = fechaFin != null ? fechaFin : fechaInicioConsulta.plusWeeks(4);
+        
+        if (fechaFinConsulta.isBefore(fechaInicioConsulta)) {
+            return ResponseEntity.badRequest().body("La fecha final debe ser posterior a la fecha inicial");
+        }
+        
+        List<DisponibilidadServicioProjection> disponibilidad = 
+            agendaServicioRepository.findDisponibilidadByServicioReadCommittedWithTimeout(
+                idServicio, fechaInicioConsulta, fechaFinConsulta);
+        
+        if (disponibilidad.isEmpty()) {
+            return ResponseEntity.ok("No hay disponibilidad para este servicio en el período especificado");
+        }
+        
+        return ResponseEntity.ok(disponibilidad);
+        
+    } catch (QueryTimeoutException e) {
+        return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT)
+               .body("La consulta ha excedido el tiempo máximo de 30 segundos");
+    } catch (Exception e) {
+        return ResponseEntity.internalServerError()
+               .body("Error al consultar disponibilidad: " + e.getMessage());
     }
 }
 
